@@ -1,5 +1,7 @@
 #include <stdio.h>
 
+//from https://blog.csdn.net/xiaowang627/article/details/51339959
+
 const int RED=0;
 const int BLACK=1;
 
