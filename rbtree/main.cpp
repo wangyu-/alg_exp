@@ -9,18 +9,18 @@ struct Node{
     Node(int key){
         this->key=key;
     }
-    int key;
-    int color;
-    Node* parent;
-    Node* left;
-    Node* right;
+    int key=-1;
+    int color=1;
+    Node* parent=0;
+    Node* left=0;
+    Node* right=0;
 };
 
 struct Tree{
     Tree(){
     }
-    Node* root;
-    Node* nil;
+    Node* root=0;
+    Node* nil=0;
 };
 
 
@@ -155,7 +155,8 @@ void dfs_prt2(Tree *T,Node *node)
 
 
 //from https://stackoverflow.com/questions/801740/c-how-to-draw-a-binary-tree-to-the-console
-int _print_t(Node *tree, int is_left, int offset, int depth, char s[20][255])
+int max_row=0;
+int _print_t(Tree *T,Node *tree, int is_left, int offset, int depth, char s[20][255])
 {
     char b[20];
     int width = 2;
@@ -163,7 +164,7 @@ int _print_t(Node *tree, int is_left, int offset, int depth, char s[20][255])
 
     if (!tree) return 0;
 
-    if(tree->key==0)
+    if(tree==T->nil)
         sprintf(b, " N");
     else
     {
@@ -172,30 +173,14 @@ int _print_t(Node *tree, int is_left, int offset, int depth, char s[20][255])
         if(tree->color==RED) is_red=1;
     }
 
-    int left  = _print_t(tree->left,  1, offset,                depth + 1, s);
-    int right = _print_t(tree->right, 0, offset + left + width, depth + 1, s);
+    int left  = _print_t(T,tree->left,  1, offset,                depth + 1, s);
+    int right = _print_t(T,tree->right, 0, offset + left + width, depth + 1, s);
 
-#if 0
-    for (int i = 0; i < width; i++)
-        s[depth][offset + left + i] = b[i];
+    if(2*depth>max_row) max_row= 2*depth;
 
-    if (depth && is_left) {
-
-        for (int i = 0; i < width + right; i++)
-            s[depth - 1][offset + left + width/2 + i] = '-';
-
-        s[depth - 1][offset + left + width/2] = '.';
-
-    } else if (depth && !is_left) {
-
-        for (int i = 0; i < left + width; i++)
-            s[depth - 1][offset - width/2 + i] = '-';
-
-        s[depth - 1][offset + left + width/2] = '.';
-    }
-#else
     for (int i = 0; i < width; i++)
         s[2 * depth][offset + left + i] = b[i];
+
     if(is_red)
     {
         s[2 * depth][offset + left - 1] = 'R';
@@ -218,67 +203,71 @@ int _print_t(Node *tree, int is_left, int offset, int depth, char s[20][255])
         s[2 * depth - 1][offset + left + width/2] = '+';
         s[2 * depth - 1][offset - width/2 - 1] = '+';
     }
-#endif
 
     return left + width + right;
 }
 
-void print_t(Node *tree)
+void print_t(Tree *T,Node *tree)
 {
-    char s[20][255];
-    for (int i = 0; i < 20; i++)
+    const int max_height=100;
+    char s[max_height][255];
+    for (int i = 0; i < max_height; i++)
         sprintf(s[i], "%80s", " ");
 
-    _print_t(tree, 0, 0, 0, s);
+    _print_t(T,tree, 0, 0, 0, s);
 
     //for (int i = 0; i < 20; i++)
       //  printf("%s\n", s[i]);
-    for (int i = 0; i < 20; i++)
+    for (int i = 0; i < max_row+3; i++)
         for(int j=0;;j++)
         {
             if(s[i][j]==0) {printf("\n");break;}
             if(s[i][j]=='R') printf("%s ",REDD);
             else if(s[i][j]=='r') printf("%s ",RESET);
+            else if(s[i][j]=='+'||s[i][j]=='-') printf("%s%c%s",YEL,s[i][j],RESET);
             else printf("%c",s[i][j]);
         }
+}
+
+int run(int arr[],int len)
+{
+    Tree *T;
+    //Node* z[MAXSIZE];
+    T = new Tree();
+    T->nil = new Node(0);
+    T->nil->color = BLACK;
+    T->root = T->nil;
+    for (int i = 0; i < len; i++)
+    {
+        Node *z = new Node(arr[i]);
+        RB_INSERT(T, z);
+    }
+    print_t(T,T->root);
 }
 
 int main(){
 
     {
-        Tree *T;
-        //Node* z[MAXSIZE];
-        int arr[] = {12, 1, 9, 2, 0, 11, 7, 19, 4, 15, 18, 5, 14, 13, 10, 16, 6, 3, 8, 17};
-        //int arr[]={41,38,31,12,19,8};
+        int arr[]={};
         int len = sizeof(arr) / sizeof(arr[0]);
-        T = new Tree();
-        T->nil = new Node(0);
-        T->nil->color = BLACK;
-        T->root = T->nil;
-        for (int i = 0; i < len; i++)
-        {
-            Node *z = new Node(arr[i]);
-            RB_INSERT(T, z);
-        }
-        print_t(T->root);
+        run(arr,len);
+    }
+    {
+        int arr[]={12};
+        int len = sizeof(arr) / sizeof(arr[0]);
+        run(arr,len);
     }
 
     {
-        Tree *T;
-        //Node* z[MAXSIZE];
-        //int arr[] = {12, 1, 9, 2, 0, 11, 7, 19, 4, 15, 18, 5, 14, 13, 10, 16, 6, 3, 8, 17};
+        int arr[] = {12, 1, 9, 2, 0, 11, 7, 19, 4, 15, 18, 5, 14, 13, 10, 16, 6, 3, 8, 17};
+        int len = sizeof(arr) / sizeof(arr[0]);
+        run(arr,len);
+    }
+
+    {
         int arr[]={41,38,31,12,19,8};
         int len = sizeof(arr) / sizeof(arr[0]);
-        T = new Tree();
-        T->nil = new Node(0);
-        T->nil->color = BLACK;
-        T->root = T->nil;
-        for (int i = 0; i < len; i++)
-        {
-            Node *z = new Node(arr[i]);
-            RB_INSERT(T, z);
-        }
-        print_t(T->root);
+        run(arr,len);
     }
     return 0;
 }
