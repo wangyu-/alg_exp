@@ -151,6 +151,8 @@ void dfs_prt2(Tree *T,Node *node)
 #define WHT   "\x1B[37m"
 #define RESET "\x1B[0m"
 
+
+//from https://stackoverflow.com/questions/801740/c-how-to-draw-a-binary-tree-to-the-console
 int _print_t(Node *tree, int is_left, int offset, int depth, char s[20][255])
 {
     char b[20];
