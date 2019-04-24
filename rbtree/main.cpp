@@ -209,6 +209,7 @@ int _print_t(Tree *T,Node *tree, int is_left, int offset, int depth, char s[20][
 
 void print_t(Tree *T,Node *tree)
 {
+    max_row=0;
     const int max_height=100;
     char s[max_height][255];
     for (int i = 0; i < max_height; i++)
@@ -231,6 +232,8 @@ void print_t(Tree *T,Node *tree)
 
 int run(int arr[],int len)
 {
+    static int cnt=0;
+    printf("=============case %d===============\n",cnt++);
     Tree *T;
     //Node* z[MAXSIZE];
     T = new Tree();
@@ -241,6 +244,7 @@ int run(int arr[],int len)
     {
         Node *z = new Node(arr[i]);
         RB_INSERT(T, z);
+        //print_t(T,T->root);
     }
     print_t(T,T->root);
 }
