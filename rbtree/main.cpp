@@ -29,7 +29,7 @@ void LEFT_ROTATE(Tree* &T, Node* x){
 
     y=x->right;
     x->right=y->left;
-    if(y->left!=T->nil)
+    //if(y->left!=T->nil)
         y->left->parent=x;
     y->parent=x->parent;
     if(x->parent==T->nil)
@@ -47,7 +47,7 @@ void RIGHT_ROTATE(Tree* &T, Node* y){
 
     x=y->left;
     y->left=x->right;
-    if(x->right!=T->nil)
+    //if(x->right!=T->nil)
         x->right->parent=y;
     x->parent=y->parent;
     if(y->parent==T->nil)
@@ -238,6 +238,7 @@ int run(int arr[],int len)
     //Node* z[MAXSIZE];
     T = new Tree();
     T->nil = new Node(0);
+
     T->nil->color = BLACK;
     T->root = T->nil;
     for (int i = 0; i < len; i++)
@@ -273,5 +274,12 @@ int main(){
         int len = sizeof(arr) / sizeof(arr[0]);
         run(arr,len);
     }
+
+    {
+        int arr[]={1,2,3,4,5,6,7,8,9,10};
+        int len = sizeof(arr) / sizeof(arr[0]);
+        run(arr,len);
+    }
+
     return 0;
 }
